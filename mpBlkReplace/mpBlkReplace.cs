@@ -12,7 +12,7 @@
 
     public class MpBlkReplace
     {
-        private static string _langItem = new ModPlusConnector().Name;
+        private static readonly string LangItem = new ModPlusConnector().Name;
 
         private static bool _scales;
         private static bool _transform;
@@ -28,8 +28,8 @@
             var blkNamesToRemove = new List<string>();
             try
             {
-                var peo = new PromptEntityOptions("\n" + Language.GetItem(_langItem, "h1") + ": ");
-                peo.SetRejectMessage("\n" + Language.GetItem(_langItem, "wrong"));
+                var peo = new PromptEntityOptions($"\n{Language.GetItem(LangItem, "h1")}: ");
+                peo.SetRejectMessage($"\n{Language.GetItem(LangItem, "wrong")}");
                 peo.AllowNone = false;
                 peo.AllowObjectOnLockedLayer = true;
                 peo.AddAllowedClass(typeof(BlockReference), true);
@@ -38,7 +38,7 @@
                     return;
                 var secondBlockId = per.ObjectId;
 
-                peo.Message = "\n" + Language.GetItem(_langItem, "h2") + ": ";
+                peo.Message = $"\n{Language.GetItem(LangItem, "h2")}: ";
                 per = ed.GetEntity(peo);
                 if (per.Status != PromptStatus.OK)
                     return;
@@ -119,8 +119,8 @@
                     {
                         AllowDuplicates = false,
                         AllowSubSelections = false,
-                        MessageForAdding = "\n" + Language.GetItem(_langItem, "h3") + ": ",
-                        MessageForRemoval = "\n" + Language.GetItem(_langItem, "h4") + ": "
+                        MessageForAdding = $"\n{Language.GetItem(LangItem, "h3")}: ",
+                        MessageForRemoval = $"\n{Language.GetItem(LangItem, "h4")}: "
                     };
 
                     var acTypValAr = new TypedValue[1];
@@ -136,11 +136,11 @@
                 if (selSet.Count > 0)
                 {
                     var peo = new PromptEntityOptions(string.Empty);
-                    peo.SetRejectMessage("\n" + Language.GetItem(_langItem, "wrong"));
+                    peo.SetRejectMessage($"\n{Language.GetItem(LangItem, "wrong")}");
                     peo.AllowNone = false;
                     peo.AllowObjectOnLockedLayer = true;
                     peo.AddAllowedClass(typeof(BlockReference), true);
-                    peo.Message = "\n" + Language.GetItem(_langItem, "h2") + ": ";
+                    peo.Message = $"\n{Language.GetItem(LangItem, "h2")}: ";
                     var per = ed.GetEntity(peo);
                     if (per.Status != PromptStatus.OK)
                         return;
@@ -209,12 +209,12 @@
                 {
                     var pko = new PromptKeywordOptions(string.Empty)
                     {
-                        Message = "\n" + Language.GetItem(_langItem, "h5") + ": ",
+                        Message = $"\n{Language.GetItem(LangItem, "h5")}: ",
                         AllowNone = false,
                         AppendKeywordsToMessage = true
                     };
-                    pko.Keywords.Add("Yes", Language.GetItem(_langItem, "yes"));
-                    pko.Keywords.Add("No", Language.GetItem(_langItem, "no"));
+                    pko.Keywords.Add("Yes", Language.GetItem(LangItem, "yes"));
+                    pko.Keywords.Add("No", Language.GetItem(LangItem, "no"));
                     var pkr = ed.GetKeywords(pko);
                     if (pkr.Status != PromptStatus.OK)
                         return;
@@ -267,17 +267,19 @@
 
         private static void GetSettings()
         {
-            _layer = bool.TryParse(UserConfigFile.GetValue(_langItem, "layer"), out bool b) && b;
-            _transform = bool.TryParse(UserConfigFile.GetValue(_langItem, "transform"), out b) && b;
-            _scales = bool.TryParse(UserConfigFile.GetValue(_langItem, "scales"), out b) && b;
-            _rotation = bool.TryParse(UserConfigFile.GetValue(_langItem, "rotation"), out b) && b;
-            _cleanBd = int.TryParse(UserConfigFile.GetValue(_langItem, "cleanBD"), out int i) ? i : 0;
+            _layer = bool.TryParse(UserConfigFile.GetValue(LangItem, "layer"), out bool b) && b;
+            _transform = bool.TryParse(UserConfigFile.GetValue(LangItem, "transform"), out b) && b;
+            _scales = bool.TryParse(UserConfigFile.GetValue(LangItem, "scales"), out b) && b;
+            _rotation = bool.TryParse(UserConfigFile.GetValue(LangItem, "rotation"), out b) && b;
+            _cleanBd = int.TryParse(UserConfigFile.GetValue(LangItem, "cleanBD"), out int i) ? i : 0;
         }
 
         [CommandMethod("ModPlus", "mpBlkReplace", CommandFlags.UsePickSet)]
         public static void Main()
         {
+#if !DEBUG
             Statistic.SendCommandStarting(new ModPlusConnector());
+#endif
             GetSettings();
             var repeat = true;
             var doc = AcApp.DocumentManager.MdiActiveDocument;
@@ -289,13 +291,13 @@
 
                 var pko = new PromptKeywordOptions(string.Empty)
                 {
-                    Message = "\n" + Language.GetItem(_langItem, "h6") + ": ",
+                    Message = $"\n{Language.GetItem(LangItem, "h6")}: ",
                     AllowNone = false,
                     AppendKeywordsToMessage = true
                 };
-                pko.Keywords.Add("replaceSelected", Language.GetItem(_langItem, "k1"));
-                pko.Keywords.Add("replaceAll", Language.GetItem(_langItem, "k2"));
-                pko.Keywords.Add("seTtings", Language.GetItem(_langItem, "k3"));
+                pko.Keywords.Add("replaceSelected", Language.GetItem(LangItem, "k1"));
+                pko.Keywords.Add("replaceAll", Language.GetItem(LangItem, "k2"));
+                pko.Keywords.Add("seTtings", Language.GetItem(LangItem, "k3"));
 
                 var pkr = ed.GetKeywords(pko);
                 if (pkr.Status != PromptStatus.OK)
